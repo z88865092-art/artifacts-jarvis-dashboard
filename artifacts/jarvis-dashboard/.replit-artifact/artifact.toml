@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Jarvis-OS Smart Dashboard"
+version = "1.0.0"
+id = "artifacts/jarvis-dashboard"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25020
+
+[services.development]
+run = "pnpm --filter @workspace/jarvis-dashboard run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/jarvis-dashboard", "run", "build" ]
+publicDir = "artifacts/jarvis-dashboard/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25020"
+BASE_PATH = "/"

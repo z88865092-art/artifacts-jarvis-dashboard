@@ -1,0 +1,139 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: system
+    description: System monitoring
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /system/stats:
+    get:
+      operationId: getSystemStats
+      tags: [system]
+      summary: System statistics
+      description: Returns live system metrics, service registry, task list, and alerts
+      responses:
+        "200":
+          description: Current system stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SystemStats"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ServiceInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum: [online, degraded, offline]
+        load:
+          type: number
+        ping:
+          type: string
+      required: [name, status, load, ping]
+
+    TaskInfo:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        progress:
+          type: number
+        status:
+          type: string
+          enum: [running, done, failed]
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+      required: [id, name, progress, status, priority]
+
+    AlertInfo:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [info, warn, success, error]
+        msg:
+          type: string
+        time:
+          type: string
+      required: [type, msg, time]
+
+    SystemStats:
+      type: object
+      properties:
+        cpu:
+          type: number
+          description: CPU usage percent
+        ram:
+          type: object
+          properties:
+            used:
+              type: number
+            total:
+              type: number
+            percent:
+              type: number
+          required: [used, total, percent]
+        network:
+          type: object
+          properties:
+            upload:
+              type: number
+            download:
+              type: number
+          required: [upload, download]
+        uptime:
+          type: number
+        latency:
+          type: number
+        threatsBlocked:
+          type: number
+        services:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServiceInfo"
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskInfo"
+        alerts:
+          type: array
+          items:
+            $ref: "#/components/schemas/AlertInfo"
+      required: [cpu, ram, network, uptime, latency, threatsBlocked, services, tasks, alerts]
