@@ -43,10 +43,16 @@ export default function Chat() {
 
   useEffect(() => {
     if (!hasLoaded) {
-      const saved = localStorage.getItem("jarvis_chat_history");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        parsed.forEach((m: ChatMessage) => bridge.addMessage(m));
+      try {
+        const saved = localStorage.getItem("jarvis_chat_history");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            parsed.forEach((m: ChatMessage) => bridge.addMessage(m));
+          }
+        }
+      } catch (e) {
+        localStorage.removeItem("jarvis_chat_history");
       }
       setHasLoaded(true);
     }
@@ -78,7 +84,10 @@ export default function Chat() {
       setTyping(true);
 
       try {
+        // API KEY ka verification
         const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+        if (!API_KEY) throw new Error("API Key missing");
+
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
           {
@@ -89,10 +98,13 @@ export default function Chat() {
             }),
           },
         );
+
+        if (!response.ok) throw new Error(`API error: ${response.status}`);
+
         const data = await response.json();
         const aiText =
           data.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "System nominal. I am ready.";
+          "No response generated.";
 
         bridge.addMessage({
           id: Date.now() + 1,
@@ -103,10 +115,11 @@ export default function Chat() {
           tone: bridge.toneProfile.dominantTone,
         });
       } catch (error) {
+        console.error("Jarvis Error:", error);
         bridge.addMessage({
           id: Date.now() + 1,
           role: "ai",
-          text: "Error: Unable to connect to neural net.",
+          text: "Neural net connection failed. Please check your API key in Vercel settings.",
           time: now(),
           source: "text",
         });
@@ -124,9 +137,8 @@ export default function Chat() {
   });
 
   return (
-    // ... (Aapka UI code waisa hi rahega)
     <div className="flex flex-col h-[calc(100vh-7.5rem)] max-w-4xl mx-auto">
-      {/* Header, Messages, Input code yahan waisa hi paste karein jaisa aapka purana tha */}
+      {/* UI Code... */}
       <div className="hex-border rounded-xl bg-card px-4 py-3 flex items-center gap-3 mb-4 shrink-0">
         <div className="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center glow-ring">
           <Bot className="w-4 h-4 text-primary" />
