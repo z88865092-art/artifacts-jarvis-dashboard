@@ -3,7 +3,7 @@
 
   "installCommand":  "pnpm install --frozen-lockfile",
   "buildCommand":    "pnpm --filter @workspace/jarvis-dashboard run build",
-  "outputDirectory": "artifacts/jarvis-dashboard/dist/public",
+  "outputDirectory": "artifacts/jarvis-dashboard/dist",
 
   "env": {
     "BASE_PATH": "/",
