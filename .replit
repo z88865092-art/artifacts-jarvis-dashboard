@@ -63,3 +63,12 @@ externalPort = 3000
 [[ports]]
 localPort = 25099
 externalPort = 3001
+
+[userenv]
+
+[userenv.shared]
+VITE_SUPABASE_URL = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiYmJkZ2Nwc2F1YXRta2pkdnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNzE4MzYsImV4cCI6MjA5NTY0NzgzNn0.f5T4SXA1S4MwJajtAuEcxV4h02JCJ6DCit26t-10phM"
+VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiYmJkZ2Nwc2F1YXRta2pkdnVzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDA3MTgzNiwiZXhwIjoyMDk1NjQ3ODM2fQ.dltZvfuaPtPuXR6hjC4Z1_jQIQwoUSuy2EmsyS-ZXQ4"
+
+[nix]
+packages = ["psmisc"]
