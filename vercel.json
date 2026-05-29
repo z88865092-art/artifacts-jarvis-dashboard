@@ -1,13 +1,13 @@
 {
   "framework": null,
 
-  "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand":   "pnpm --filter @workspace/jarvis-dashboard run build",
+  "installCommand":  "pnpm install --frozen-lockfile",
+  "buildCommand":    "pnpm --filter @workspace/jarvis-dashboard run build",
   "outputDirectory": "artifacts/jarvis-dashboard/dist/public",
 
   "env": {
-    "BASE_PATH":    "/",
-    "NODE_ENV":     "production"
+    "BASE_PATH": "/",
+    "NODE_ENV":  "production"
   },
 
   "rewrites": [
@@ -16,13 +16,21 @@
 
   "headers": [
     {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control",               "value": "no-store, must-revalidate" },
+        { "key": "Access-Control-Allow-Origin",  "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" }
+      ]
+    },
+    {
       "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "/(.*).html",
+      "source": "/(.*)\\.html",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache" }
       ]
