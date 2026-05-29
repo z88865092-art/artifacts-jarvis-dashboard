@@ -4,7 +4,6 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Node.js environment ke liye path setup
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const rawPort = process.env.PORT;
@@ -12,12 +11,7 @@ const basePath = process.env.BASE_PATH ?? "/";
 const port = Number(rawPort ?? "3000");
 const isReplitRuntime = process.env.REPL_ID !== undefined;
 
-if (isReplitRuntime && process.env.NODE_ENV !== "production") {
-  if (!rawPort) throw new Error("PORT environment variable is required.");
-  if (Number.isNaN(port) || port <= 0)
-    throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
-
+// Replit plugins ko dynamic load karna
 const replitPlugins =
   process.env.NODE_ENV !== "production" && isReplitRuntime
     ? await Promise.all([
@@ -49,6 +43,15 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist"),
     emptyOutDir: true,
+    // Professional Build Optimization
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "framer-motion", "lucide-react"],
+        },
+      },
+    },
   },
 
   server: {
@@ -57,11 +60,5 @@ export default defineConfig({
     host: "0.0.0.0",
     allowedHosts: true,
     fs: { strict: true },
-  },
-
-  preview: {
-    port,
-    host: "0.0.0.0",
-    allowedHosts: true,
   },
 });
