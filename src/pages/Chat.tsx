@@ -85,37 +85,35 @@ function formatText(text: string) {
   });
 }
 
-const quickPrompts = [
-  "Show system status",
-  "List all running tasks",
-  "Check threat log",
-  "Optimize memory usage",
-];
-
 export default function Chat() {
   const bridge = useChatBridge();
   const [typing, setTyping] = useState(false);
   const [input, setInput] = useState("");
-  const [copiedId, setCopiedId] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   // Persistence: Load chat on startup
   useEffect(() => {
-    const saved = localStorage.getItem("jarvis_chat_history");
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      parsed.forEach((m: ChatMessage) => bridge.addMessage(m));
+    if (!hasLoaded) {
+      const saved = localStorage.getItem("jarvis_chat_history");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        parsed.forEach((m: ChatMessage) => bridge.addMessage(m));
+      }
+      setHasLoaded(true);
     }
-  }, []);
+  }, [bridge, hasLoaded]);
 
   // Persistence: Save chat whenever messages change
   useEffect(() => {
-    localStorage.setItem(
-      "jarvis_chat_history",
-      JSON.stringify(bridge.messages),
-    );
+    if (hasLoaded) {
+      localStorage.setItem(
+        "jarvis_chat_history",
+        JSON.stringify(bridge.messages),
+      );
+    }
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [bridge.messages]);
+  }, [bridge.messages, hasLoaded]);
 
   const sendMessage = useCallback(
     (text: string, source: "text" | "voice" = "text") => {
@@ -155,7 +153,6 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-7.5rem)] max-w-4xl mx-auto">
-      {/* Header */}
       <div className="hex-border rounded-xl bg-card px-4 py-3 flex items-center gap-3 mb-4 shrink-0">
         <div className="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center glow-ring">
           <Bot className="w-4 h-4 text-primary" />
@@ -177,7 +174,6 @@ export default function Chat() {
         </button>
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto space-y-4 pr-1">
         {bridge.messages.map((msg: ChatMessage) => (
           <div
@@ -204,7 +200,6 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input Bar */}
       <div className="mt-3 hex-border rounded-xl bg-card flex items-center gap-2 p-3 shrink-0">
         <button
           onClick={speech.status === "listening" ? speech.stop : speech.start}
