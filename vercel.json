@@ -1,5 +1,9 @@
 {
-  "buildCommand": "cd artifacts-jarvis-dashboard && npm run build",
-  "outputDirectory": "artifacts-jarvis-dashboard/dist",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite"
+}{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "framework": "vite"
 }
