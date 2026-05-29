@@ -1,7 +1,7 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { setBaseUrl } from "@/lib/api"; // یقینی بنائیں کہ آپ کی فائل کا پاتھ یہی ہے
+import { setBaseUrl } from "@/lib/api";
 import Layout from "@/components/Layout";
 import Dashboard from "@/pages/Dashboard";
 import Chat from "@/pages/Chat";
@@ -30,11 +30,12 @@ function Router() {
 }
 
 function App() {
-  // API URL سیٹ کرنے کے لیے یہ حصہ شامل کرنا ضروری ہے
+  // یہ حصہ خود بخود Vercel کی Settings سے URL اٹھا لے گا
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL;
     if (apiUrl) {
       setBaseUrl(apiUrl);
+      console.log("Base URL set to:", apiUrl);
     }
   }, []);
 
