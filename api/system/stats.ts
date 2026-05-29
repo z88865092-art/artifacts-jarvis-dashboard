@@ -1,32 +1,21 @@
 // Vercel Serverless Function — GET /api/system/stats
-//
-// Stateless equivalent of artifacts/api-server/src/routes/system.ts.
-// Each invocation generates realistic randomised metrics within the same
-// ranges used by the Express route, so the dashboard charts look live
-// even though module-level state cannot persist across cold starts.
+// Root Directory: artifacts/jarvis-dashboard  →  URL path: /api/system/stats
 
 import type { IncomingMessage, ServerResponse } from "http";
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v));
 }
 
-/** Return a random integer centred on `base` within ±`spread`. */
 function randInt(base: number, spread: number): number {
   return Math.round(clamp(base + (Math.random() - 0.5) * spread * 2, base - spread, base + spread));
 }
 
-/** Return a random float (1 decimal place) centred on `base` within ±`spread`. */
 function randFloat(base: number, spread: number): number {
   return Math.round(clamp(base + (Math.random() - 0.5) * spread * 2, base - spread, base + spread) * 10) / 10;
 }
 
-// ── Handler ───────────────────────────────────────────────────────────────────
-
 export default function handler(req: IncomingMessage, res: ServerResponse): void {
-  // Only allow GET and OPTIONS (preflight)
   if (req.method === "OPTIONS") {
     res.writeHead(204, {
       "Access-Control-Allow-Origin":  "*",
@@ -42,8 +31,6 @@ export default function handler(req: IncomingMessage, res: ServerResponse): void
     res.end(JSON.stringify({ error: "Method not allowed" }));
     return;
   }
-
-  // ── Metrics ────────────────────────────────────────────────────────────────
 
   const cpu      = randFloat(74, 12);
   const ramUsed  = randFloat(6.2, 0.4);
