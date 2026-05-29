@@ -1,58 +1,7 @@
 import { useReducer, useEffect, useRef, useCallback, useState } from "react";
-import {
-  Send,
-  Bot,
-  Zap,
-  RefreshCw,
-  Copy,
-  ThumbsUp,
-  ThumbsDown,
-  Mic,
-  MicOff,
-  User,
-} from "lucide-react";
+import { Send, Bot, Zap, RefreshCw, Mic, User } from "lucide-react";
 import { chatBridge, type ChatMessage } from "@/store/chatBridge";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
-
-// ── Tone-aware response engine ────────────────────────────────────────────────
-const toneOpener: Record<string, string> = {
-  casual: "Yaar, ",
-  urgent: "Bhai, abhi — ",
-  curious: "Dekho, ",
-  calm: "Theek hai, ",
-  formal: "Ji bilkul, ",
-  default: "",
-};
-
-const baseResponses: Record<string, string> = {
-  status:
-    "**System Status — All Systems:**\n\n- Core API: ✅ Online (4ms)\n- Auth: ✅ Online (8ms)\n- Data Pipeline: ⚠️ Recovering\n- ML Engine: ✅ Online (22ms)\n- Cache: ✅ Online (1ms)\n- Storage: ✅ Online\n\nOverall system health: **94%**",
-  tasks:
-    "**Active Tasks:**\n1. Data Sync Protocol — 87% ⏳\n2. Security Audit Scan — 42% ⏳\n3. Neural Net Training — 63% ⏳\n\n**Completed Today:**\n- Cache Optimization ✅\n- Log Archival ✅",
-  threat:
-    "**Threat Log (Last 24h):**\n\n- 18 threats blocked\n- 12x Port scan attempts (auto-blocked)\n- 4x Brute force attempts (IP banned)\n- 2x Suspicious API calls (flagged)\n\nAll threats neutralized. No breach detected.",
-  memory:
-    "**Memory Optimization initiated...**\n\nFreed 840 MB by:\n- Clearing stale cache entries\n- Reducing ML batch buffer\n- Compressing log buffers\n\nNew usage: 5.4 GB / 7.6 GB (71%) ✅",
-  default:
-    "**Result:** Action completed successfully. All systems nominal.\n\nIs there anything else you'd like me to help with?",
-};
-
-function getResponse(text: string): string {
-  const lower = text.toLowerCase();
-  const tone = chatBridge.toneProfile.dominantTone;
-  const opener = toneOpener[tone] ?? "";
-  let base: string;
-  if (lower.includes("status")) base = baseResponses.status;
-  else if (lower.includes("task")) base = baseResponses.tasks;
-  else if (lower.includes("threat") || lower.includes("security"))
-    base = baseResponses.threat;
-  else if (lower.includes("memory") || lower.includes("optimize"))
-    base = baseResponses.memory;
-  else base = baseResponses.default;
-
-  const [firstLine, ...rest] = base.split("\n");
-  return opener + firstLine + (rest.length ? "\n" + rest.join("\n") : "");
-}
 
 function useChatBridge() {
   const [, rerender] = useReducer((n) => n + 1, 0);
@@ -92,7 +41,6 @@ export default function Chat() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [hasLoaded, setHasLoaded] = useState(false);
 
-  // Persistence: Load chat on startup
   useEffect(() => {
     if (!hasLoaded) {
       const saved = localStorage.getItem("jarvis_chat_history");
@@ -104,7 +52,6 @@ export default function Chat() {
     }
   }, [bridge, hasLoaded]);
 
-  // Persistence: Save chat whenever messages change
   useEffect(() => {
     if (hasLoaded) {
       localStorage.setItem(
@@ -116,7 +63,7 @@ export default function Chat() {
   }, [bridge.messages, hasLoaded]);
 
   const sendMessage = useCallback(
-    (text: string, source: "text" | "voice" = "text") => {
+    async (text: string, source: "text" | "voice" = "text") => {
       const trimmed = text.trim();
       if (!trimmed) return;
 
@@ -130,17 +77,42 @@ export default function Chat() {
       setInput("");
       setTyping(true);
 
-      setTimeout(() => {
+      try {
+        const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: trimmed }] }],
+            }),
+          },
+        );
+        const data = await response.json();
+        const aiText =
+          data.candidates?.[0]?.content?.parts?.[0]?.text ||
+          "System nominal. I am ready.";
+
         bridge.addMessage({
           id: Date.now() + 1,
           role: "ai",
-          text: getResponse(trimmed),
+          text: aiText,
           time: now(),
           source: "text",
           tone: bridge.toneProfile.dominantTone,
         });
+      } catch (error) {
+        bridge.addMessage({
+          id: Date.now() + 1,
+          role: "ai",
+          text: "Error: Unable to connect to neural net.",
+          time: now(),
+          source: "text",
+        });
+      } finally {
         setTyping(false);
-      }, 900);
+      }
     },
     [bridge],
   );
@@ -152,7 +124,9 @@ export default function Chat() {
   });
 
   return (
+    // ... (Aapka UI code waisa hi rahega)
     <div className="flex flex-col h-[calc(100vh-7.5rem)] max-w-4xl mx-auto">
+      {/* Header, Messages, Input code yahan waisa hi paste karein jaisa aapka purana tha */}
       <div className="hex-border rounded-xl bg-card px-4 py-3 flex items-center gap-3 mb-4 shrink-0">
         <div className="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center glow-ring">
           <Bot className="w-4 h-4 text-primary" />
