@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -28,7 +27,8 @@ const replitPlugins =
 export default defineConfig({
   base: basePath,
 
-  plugins: [react(), tailwindcss(), ...replitPlugins],
+  // Tailwindcss plugin ko hata diya gaya hai kyunki hum PostCSS use karenge
+  plugins: [react(), ...replitPlugins],
 
   resolve: {
     alias: {
@@ -43,7 +43,6 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist"),
     emptyOutDir: true,
-    // Professional Build Optimization
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {

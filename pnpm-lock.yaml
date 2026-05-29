@@ -92,6 +92,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.0
         version: 1.2.8(@types/react-dom@18.3.7(@types/react@18.3.29))(@types/react@18.3.29)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@supabase/supabase-js':
+        specifier: ^2.106.2
+        version: 2.106.2
       '@tanstack/react-query':
         specifier: ^5.60.0
         version: 5.100.14(react@18.3.1)
@@ -171,6 +174,15 @@ importers:
         specifier: ^3.24.2
         version: 3.25.76
     devDependencies:
+      '@replit/vite-plugin-cartographer':
+        specifier: ^0.5.5
+        version: 0.5.5
+      '@replit/vite-plugin-dev-banner':
+        specifier: ^0.1.2
+        version: 0.1.2
+      '@replit/vite-plugin-runtime-error-modal':
+        specifier: ^0.0.6
+        version: 0.0.6
       '@tailwindcss/typography':
         specifier: ^0.5.15
         version: 0.5.19(tailwindcss@3.4.19)
@@ -1152,6 +1164,15 @@ packages:
   '@radix-ui/rect@1.1.1':
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
 
+  '@replit/vite-plugin-cartographer@0.5.5':
+    resolution: {integrity: sha512-iEXsvofgEQb1BSjMflHfuqVbRhWqI7n8u5ESSH+cSoxHgX4Lk8wM7qHk1h7u1BZSwqmPn8ftsRFSN4IVvUzB5w==}
+
+  '@replit/vite-plugin-dev-banner@0.1.2':
+    resolution: {integrity: sha512-YfW3U1xKnLrqvSiTzXeEX8AG+Vpz7XwBsJHNvGbp841AE1mLvishMQi2Zw7ApyHp+9EMGthXuCjP+mLbl3IuGA==}
+
+  '@replit/vite-plugin-runtime-error-modal@0.0.6':
+    resolution: {integrity: sha512-53iuzLsrvcUnWxAo0fvNrUhOf7LYJ+3at61dZeTIrkaZD4vGNjTbvE0j50TFcjjTC9UM74uprlnQ4+L2A//Cjg==}
+
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
 
@@ -1279,6 +1300,33 @@ packages:
     resolution: {integrity: sha512-QVTUovf40zgTqlFVrKA1uXMVvU2QWEFWfAH8Wdc48IxLvrJMQVMBRjuQyUpzZCDkakImib9eVazbWlC6ksWtJw==}
     cpu: [x64]
     os: [win32]
+
+  '@supabase/auth-js@2.106.2':
+    resolution: {integrity: sha512-VcAjUErkHkhC5Jaf+g/G1qbkQrFh8edaCdHa7pxJmHUjkWKjT7UnYCtPA89XV0N0GIYRkEqJZw5V62CtOxTmBQ==}
+    engines: {node: '>=20.0.0'}
+
+  '@supabase/functions-js@2.106.2':
+    resolution: {integrity: sha512-oRnr0QrL8H+zTO1YyQ1QjiHZU/957jvubbxSJTUm2XLAgzoGGV9Tahfyd+uvLsBLRVmXLtpU3oyCjdQIvkGMOA==}
+    engines: {node: '>=20.0.0'}
+
+  '@supabase/phoenix@0.4.2':
+    resolution: {integrity: sha512-YSAGnmDAfuleFCVt3CeurQZAhxRfXWeZIIkwp7NhYzQ1UwW6ePSnzsFAiUm/mbCkfoCf70QQHKW/K6RKh52a4A==}
+
+  '@supabase/postgrest-js@2.106.2':
+    resolution: {integrity: sha512-tDOzyPgp9pIRMR2x6C9+uDSJrnXSzxLtt3d7nC+Lrsy3jnJDHYfdQC/xcRyhJE/TOBJ0heSqRKR3UmejDjZxsw==}
+    engines: {node: '>=20.0.0'}
+
+  '@supabase/realtime-js@2.106.2':
+    resolution: {integrity: sha512-LdRGT7DNhyZkPjubUv5bSdAZ0jSEX8wTHvx7htj7+K59TOZRvz4TuQK7tL2RWxyIZVeFMRluL04SzWS61rKnUA==}
+    engines: {node: '>=20.0.0'}
+
+  '@supabase/storage-js@2.106.2':
+    resolution: {integrity: sha512-xgKCSYuev1YarV+iVqr+zlfgSyremnJtn8T0NCT8L4XmMv1CLtESc0Q6kNp8+mKWdX/8ND0nzm7OMKx08kwNAw==}
+    engines: {node: '>=20.0.0'}
+
+  '@supabase/supabase-js@2.106.2':
+    resolution: {integrity: sha512-2/RZ/1fmJx/MRSEDG2Xk8+J4JVk5clM9V0uSI6kUTrcS32KA89DtqI5RUOC9r6mzY3WBC9qexLjssIHjbLyVJA==}
+    engines: {node: '>=20.0.0'}
 
   '@tabby_ai/hijri-converter@1.0.5':
     resolution: {integrity: sha512-r5bClKrcIusDoo049dSL8CawnHR6mRdDwhlQuIgZRNty68q0x8k3Lf1BtPAMxRf/GgnHBnIO4ujd3+GQdLWzxQ==}
@@ -1608,8 +1656,8 @@ packages:
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
 
-  electron-to-chromium@1.5.363:
-    resolution: {integrity: sha512-VjUKPyWzGnT1fujlkEGC/BvN70Hh70KXtAqcmniXviYlJC/ivcT+BWGPyxWVbJZLfvtKR6dqg1L7T7pgAMBtWA==}
+  electron-to-chromium@1.5.364:
+    resolution: {integrity: sha512-G/dYE3+AYhyHwzTwg8UbnXf7zqMERYh7l2jJ3QujhFsH8agSYwtnGAR2aZ7f0AakIKJXd5En/Hre4igIUrdlYw==}
 
   embla-carousel-react@8.6.0:
     resolution: {integrity: sha512-0/PjqU7geVmo6F734pmPqpyHqiM99olvyecY7zdweCw+6tKEXnrE90pBiBbMMU8s5tICemzpQ3hi5EpxzGW+JA==}
@@ -1624,8 +1672,8 @@ packages:
   embla-carousel@8.6.0:
     resolution: {integrity: sha512-SjWyZBHJPbqxHOzckOfo8lHisEaJWmwd23XppYFYVh10bU66/Pn5tkVkbkCMZVdbUE5eTCI2nD8OyIP4Z+uwkA==}
 
-  enhanced-resolve@5.22.0:
-    resolution: {integrity: sha512-xYcDWrpELkFzz9SpZ3PlI6Eu6eD93Yf0WLDRxikGhWJ3MAir2SNZTIVCVZqZ/NUyx8AdMc2gT9C0gPiw18kG+A==}
+  enhanced-resolve@5.22.1:
+    resolution: {integrity: sha512-6QEuw3zoX1SJQc7b87aBXke/no+mG2bTBgw29gWMQonLmpEkWoCAVkl+M49e48AZlWzxiDzDZzYdp6kobcyLww==}
     engines: {node: '>=10.13.0'}
 
   es-errors@1.3.0:
@@ -1712,9 +1760,13 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  hasown@2.0.3:
-    resolution: {integrity: sha512-ej4AhfhfL2Q2zpMmLo7U1Uv9+PyhIZpgQLGT1F9miIGmiCJIoCgSmczFdrc97mWT4kVY72KA+WnnhJ5pghSvSg==}
+  hasown@2.0.4:
+    resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
     engines: {node: '>= 0.4'}
+
+  iceberg-js@0.8.1:
+    resolution: {integrity: sha512-1dhVQZXhcHje7798IVM+xoo/1ZdVfzOMIc8/rgVSijRK38EDqOJoGula9N/8ZI5RD8QTxNQtK/Gozpr+qUqRRA==}
+    engines: {node: '>=20.0.0'}
 
   input-otp@1.4.2:
     resolution: {integrity: sha512-l3jWwYNvrEa6NTCt7BECfCm48GvwuZzkoeG3gBL2w4CHeOXW3eKFmf9UNYkNfYc3mxMrthMnxjIE07MT0zLBQA==}
@@ -1872,6 +1924,9 @@ packages:
 
   mitt@3.0.1:
     resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+
+  modern-screenshot@4.7.0:
+    resolution: {integrity: sha512-9YxN+ddPSMMlhylOv25VHzXrl9u67QRxoh7+SEewGtgUw7t6hHTrjptSDJUSne9oG4Xk/h2cwG15nIt4Hc9ujg==}
 
   motion-dom@12.40.0:
     resolution: {integrity: sha512-HxU3ZaBwNPVQUBQf1xxgq+7JrPNZvjLVxgbpEZL7RrWJnsxOf0/OM+yrHG9ogLQ31Do/r57Oz2gQWPK+6q62mg==}
@@ -3229,6 +3284,22 @@ snapshots:
 
   '@radix-ui/rect@1.1.1': {}
 
+  '@replit/vite-plugin-cartographer@0.5.5':
+    dependencies:
+      '@babel/parser': 7.29.7
+      '@babel/traverse': 7.29.7
+      '@babel/types': 7.29.7
+      magic-string: 0.30.21
+      modern-screenshot: 4.7.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@replit/vite-plugin-dev-banner@0.1.2': {}
+
+  '@replit/vite-plugin-runtime-error-modal@0.0.6':
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
   '@rollup/rollup-android-arm-eabi@4.60.4':
@@ -3306,12 +3377,44 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.60.4':
     optional: true
 
+  '@supabase/auth-js@2.106.2':
+    dependencies:
+      tslib: 2.8.1
+
+  '@supabase/functions-js@2.106.2':
+    dependencies:
+      tslib: 2.8.1
+
+  '@supabase/phoenix@0.4.2': {}
+
+  '@supabase/postgrest-js@2.106.2':
+    dependencies:
+      tslib: 2.8.1
+
+  '@supabase/realtime-js@2.106.2':
+    dependencies:
+      '@supabase/phoenix': 0.4.2
+      tslib: 2.8.1
+
+  '@supabase/storage-js@2.106.2':
+    dependencies:
+      iceberg-js: 0.8.1
+      tslib: 2.8.1
+
+  '@supabase/supabase-js@2.106.2':
+    dependencies:
+      '@supabase/auth-js': 2.106.2
+      '@supabase/functions-js': 2.106.2
+      '@supabase/postgrest-js': 2.106.2
+      '@supabase/realtime-js': 2.106.2
+      '@supabase/storage-js': 2.106.2
+
   '@tabby_ai/hijri-converter@1.0.5': {}
 
   '@tailwindcss/node@4.3.0':
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      enhanced-resolve: 5.22.0
+      enhanced-resolve: 5.22.1
       jiti: 2.7.0
       lightningcss: 1.32.0
       magic-string: 0.30.21
@@ -3496,7 +3599,7 @@ snapshots:
     dependencies:
       baseline-browser-mapping: 2.10.32
       caniuse-lite: 1.0.30001793
-      electron-to-chromium: 1.5.363
+      electron-to-chromium: 1.5.364
       node-releases: 2.0.46
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
 
@@ -3605,7 +3708,7 @@ snapshots:
       '@babel/runtime': 7.29.7
       csstype: 3.2.3
 
-  electron-to-chromium@1.5.363: {}
+  electron-to-chromium@1.5.364: {}
 
   embla-carousel-react@8.6.0(react@18.3.1):
     dependencies:
@@ -3619,7 +3722,7 @@ snapshots:
 
   embla-carousel@8.6.0: {}
 
-  enhanced-resolve@5.22.0:
+  enhanced-resolve@5.22.1:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3
@@ -3711,9 +3814,11 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  hasown@2.0.3:
+  hasown@2.0.4:
     dependencies:
       function-bind: 1.1.2
+
+  iceberg-js@0.8.1: {}
 
   input-otp@1.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -3728,7 +3833,7 @@ snapshots:
 
   is-core-module@2.16.2:
     dependencies:
-      hasown: 2.0.3
+      hasown: 2.0.4
 
   is-extglob@2.1.1: {}
 
@@ -3827,6 +3932,8 @@ snapshots:
       picomatch: 2.3.2
 
   mitt@3.0.1: {}
+
+  modern-screenshot@4.7.0: {}
 
   motion-dom@12.40.0:
     dependencies:
