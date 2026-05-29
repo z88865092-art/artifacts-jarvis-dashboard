@@ -1,5 +1,7 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { setBaseUrl } from "@/lib/api"; // یقینی بنائیں کہ آپ کی فائل کا پاتھ یہی ہے
 import Layout from "@/components/Layout";
 import Dashboard from "@/pages/Dashboard";
 import Chat from "@/pages/Chat";
@@ -28,6 +30,14 @@ function Router() {
 }
 
 function App() {
+  // API URL سیٹ کرنے کے لیے یہ حصہ شامل کرنا ضروری ہے
+  useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    if (apiUrl) {
+      setBaseUrl(apiUrl);
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
