@@ -19,7 +19,7 @@ run = "pnpm --filter @workspace/jarvis-dashboard run dev"
 
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/jarvis-dashboard", "run", "build" ]
-publicDir = "artifacts/jarvis-dashboard/dist/public"
+publicDir = "artifacts/jarvis-dashboard/dist"
 serve = "static"
 
 [[services.production.rewrites]]
