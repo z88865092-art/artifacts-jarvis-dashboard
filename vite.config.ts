@@ -6,7 +6,9 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const rawPort = process.env.PORT;
-const basePath = process.env.BASE_PATH ?? "/";
+// Vercel par deployment ke liye default '/' hona zaroori hai
+const basePath =
+  process.env.NODE_ENV === "production" ? "/" : (process.env.BASE_PATH ?? "/");
 const port = Number(rawPort ?? "3000");
 const isReplitRuntime = process.env.REPL_ID !== undefined;
 
@@ -27,7 +29,6 @@ const replitPlugins =
 export default defineConfig({
   base: basePath,
 
-  // Tailwindcss plugin ko hata diya gaya hai kyunki hum PostCSS use karenge
   plugins: [react(), ...replitPlugins],
 
   resolve: {
@@ -42,6 +43,7 @@ export default defineConfig({
 
   build: {
     outDir: path.resolve(__dirname, "dist"),
+    assetsDir: "assets", // Assets ke liye sahi folder path
     emptyOutDir: true,
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
