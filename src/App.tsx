@@ -1,8 +1,9 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
+// Import hash location hook
+import { useHashLocation } from "wouter/use-hash-location";
 
-// Sahi import path: setBaseUrl ab custom-fetch.ts se import ho raha hai
 import { setBaseUrl } from "@/lib/api-client/custom-fetch";
 import Layout from "@/components/Layout";
 import Dashboard from "@/pages/Dashboard";
@@ -15,7 +16,7 @@ import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
 
-function Router() {
+function RouterContent() {
   return (
     <Layout>
       <Switch>
@@ -33,25 +34,16 @@ function Router() {
 
 function App() {
   useEffect(() => {
-    // Vite environment variable se base URL set kar rahe hain
     const apiUrl = import.meta.env.VITE_API_URL;
-    if (apiUrl) {
-      setBaseUrl(apiUrl);
-      console.log("Base URL successfully set to:", apiUrl);
-    }
+    if (apiUrl) setBaseUrl(apiUrl);
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
-      <WouterRouter
-        base={
-          import.meta.env.BASE_URL
-            ? import.meta.env.BASE_URL.replace(/\/$/, "")
-            : ""
-        }
-      >
-        <Router />
-      </WouterRouter>
+      {/* HashLocation use karne se Vercel par routes click karne par foran switch honge */}
+      <Router hook={useHashLocation}>
+        <RouterContent />
+      </Router>
     </QueryClientProvider>
   );
 }
