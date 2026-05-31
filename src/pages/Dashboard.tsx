@@ -1,12 +1,11 @@
 import {
-  Activity, Cpu, HardDrive, Wifi, TrendingUp, TrendingDown,
-  CheckCircle, Clock, AlertTriangle, Zap, Globe, Shield,
+  Activity, Cpu, HardDrive, TrendingUp, TrendingDown,
+  CheckCircle, Clock, AlertTriangle, Globe, Shield,
 } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { useGetSystemStats } from "@/lib/api-client";
 import { useEffect, useRef, useState } from "react";
 
-// ── Rolling chart buffer ──────────────────────────────────────────────────────
 const MAX_HISTORY = 20;
 
 function useRollingBuffer<T>(value: T | undefined): T[] {
@@ -18,7 +17,6 @@ function useRollingBuffer<T>(value: T | undefined): T[] {
   return buf.current;
 }
 
-// ── StatCard ──────────────────────────────────────────────────────────────────
 const StatCard = ({
   icon: Icon, label, value, unit, sub, trend, color = "primary",
 }: {
@@ -46,36 +44,32 @@ const StatCard = ({
   </div>
 );
 
-// ── Skeleton ──────────────────────────────────────────────────────────────────
 const Skeleton = ({ className }: { className?: string }) => (
   <div className={`animate-pulse rounded bg-muted/40 ${className ?? ""}`} />
 );
 
-// ── Main component ────────────────────────────────────────────────────────────
 export default function Dashboard() {
   const { data, isLoading, isError, refetch } = useGetSystemStats();
 
-  // Poll the API every 3 s for live updates
   useEffect(() => {
     const id = setInterval(() => { refetch(); }, 3000);
     return () => clearInterval(id);
   }, [refetch]);
 
-  // Rolling history buffers for the live charts
-  const [cpuHistory, setCpuHistory]     = useState<{ t: number; v: number }[]>([]);
-  const [netHistory,  setNetHistory]    = useState<{ t: number; up: number; down: number }[]>([]);
+  const [cpuHistory, setCpuHistory] = useState<{ t: number; v: number }[]>([]);
+  const [netHistory, setNetHistory] = useState<{ t: number; up: number; down: number }[]>([]);
   const tickRef = useRef(0);
 
   useEffect(() => {
     if (!data) return;
     const t = tickRef.current++;
-    setCpuHistory(prev => [...prev.slice(-(MAX_HISTORY - 1)), { t, v: data.cpu }]);
-    setNetHistory(prev => [...prev.slice(-(MAX_HISTORY - 1)), { t, up: data.network.upload, down: data.network.download }]);
+    setCpuHistory(prev => [...prev.slice(-(MAX_HISTORY - 1)), { t, v: data.cpu ?? 0 }]);
+    setNetHistory(prev => [...prev.slice(-(MAX_HISTORY - 1)), { t, up: data.network?.upload ?? 0, down: data.network?.download ?? 0 }]);
   }, [data]);
 
   if (isError) return (
     <div className="flex items-center justify-center h-64">
-      <p className="text-sm text-red-400 font-mono">⚠ Failed to reach API — is the server running?</p>
+      <p className="text-sm text-red-400 font-mono">Failed to reach API - is the server running?</p>
     </div>
   );
 
@@ -85,8 +79,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 max-w-7xl">
-
-      {/* ── Stat cards ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {isLoading ? Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="hex-border rounded-xl p-4 bg-card flex flex-col gap-3">
@@ -95,16 +87,14 @@ export default function Dashboard() {
             <Skeleton className="h-3 w-32" />
           </div>
         )) : <>
-          <StatCard icon={Cpu}    label="CPU Usage"       value={`${data!.cpu.toFixed(0)}`} unit="%" sub="8 cores active" trend="up" />
-          <StatCard icon={HardDrive} label="RAM Used"     value={`${data!.ram.percent.toFixed(0)}`} unit="%" sub={`${data!.ram.used} / ${data!.ram.total} GB`} trend="up" color="chart-4" />
-          <StatCard icon={Globe}  label="Network I/O"     value={`${data!.network.download}`} unit="MB/s" sub={`↑ ${data!.network.upload} · ↓ ${data!.network.download}`} color="chart-2" />
-          <StatCard icon={Shield} label="Threats Blocked" value={`${data!.threatsBlocked}`}  sub="Last 24 hours" trend="down" color="destructive" />
+          <StatCard icon={Cpu}       label="CPU Usage"       value={`${(data?.cpu ?? 0).toFixed(0)}`}          unit="%" sub="8 cores active" trend="up" />
+          <StatCard icon={HardDrive} label="RAM Used"        value={`${(data?.ram?.percent ?? 0).toFixed(0)}`} unit="%" sub={`${data?.ram?.used ?? 0} / ${data?.ram?.total ?? 0} GB`} trend="up" color="chart-4" />
+          <StatCard icon={Globe}     label="Network I/O"     value={`${data?.network?.download ?? 0}`}         unit="MB/s" sub={`Up ${data?.network?.upload ?? 0} Down ${data?.network?.download ?? 0}`} color="chart-2" />
+          <StatCard icon={Shield}    label="Threats Blocked" value={`${data?.threatsBlocked ?? 0}`}            sub="Last 24 hours" trend="down" color="destructive" />
         </>}
       </div>
 
-      {/* ── Charts ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* CPU chart */}
         <div className="hex-border rounded-xl bg-card p-4 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-semibold tracking-widest uppercase text-muted-foreground font-mono">CPU Activity</h3>
@@ -126,7 +116,7 @@ export default function Dashboard() {
                   <XAxis dataKey="t" hide />
                   <Tooltip
                     contentStyle={{ background: "hsl(222 40% 9%)", border: "1px solid hsl(195 100% 50% / 0.3)", borderRadius: "6px", fontSize: "11px", color: "hsl(195 100% 88%)" }}
-                    formatter={(v: number) => [`${v.toFixed(1)}%`, "CPU"]}
+                    formatter={(v: number) => [`${(v ?? 0).toFixed(1)}%`, "CPU"]}
                     labelFormatter={() => ""}
                   />
                   <Area type="monotone" dataKey="v" stroke="hsl(195 100% 50%)" strokeWidth={1.5} fill="url(#cpuGrad)" dot={false} />
@@ -136,13 +126,12 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Network chart */}
         <div className="hex-border rounded-xl bg-card p-4 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-semibold tracking-widest uppercase text-muted-foreground font-mono">Network Traffic</h3>
             <div className="flex items-center gap-3 text-[10px] font-mono">
-              <span className="text-primary">↓ Download</span>
-              <span className="text-chart-2">↑ Upload</span>
+              <span className="text-primary">Download</span>
+              <span className="text-chart-2">Upload</span>
             </div>
           </div>
           <div className="h-32">
@@ -172,9 +161,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ── Tasks + Alerts ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Tasks */}
         <div className="hex-border rounded-xl bg-card p-4 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-semibold tracking-widest uppercase text-muted-foreground font-mono">Active Tasks</h3>
@@ -203,25 +190,19 @@ export default function Dashboard() {
                       <div className="flex items-center gap-2 shrink-0 ml-2">
                         <span className="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded"
                           style={{
-                            background: task.priority === "critical" ? "hsl(0 84% 60% / 0.2)"
-                              : task.priority === "high" ? "hsl(35 90% 55% / 0.2)"
-                              : "hsl(195 100% 50% / 0.1)",
-                            color: task.priority === "critical" ? "hsl(0 84% 70%)"
-                              : task.priority === "high" ? "hsl(35 90% 65%)"
-                              : "hsl(195 100% 60%)",
+                            background: task.priority === "critical" ? "hsl(0 84% 60% / 0.2)" : task.priority === "high" ? "hsl(35 90% 55% / 0.2)" : "hsl(195 100% 50% / 0.1)",
+                            color: task.priority === "critical" ? "hsl(0 84% 70%)" : task.priority === "high" ? "hsl(35 90% 65%)" : "hsl(195 100% 60%)",
                           }}>
                           {task.priority}
                         </span>
-                        <span className="text-muted-foreground font-mono tabular-nums">{task.progress}%</span>
+                        <span className="text-muted-foreground font-mono tabular-nums">{task.progress ?? 0}%</span>
                       </div>
                     </div>
                     <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-700"
                         style={{
-                          width: `${task.progress}%`,
-                          background: task.status === "done" ? "hsl(160 80% 45%)"
-                            : task.priority === "critical" ? "hsl(0 84% 60%)"
-                            : "hsl(195 100% 50%)",
+                          width: `${task.progress ?? 0}%`,
+                          background: task.status === "done" ? "hsl(160 80% 45%)" : task.priority === "critical" ? "hsl(0 84% 60%)" : "hsl(195 100% 50%)",
                           boxShadow: task.status !== "done" ? "0 0 6px hsl(195 100% 50% / 0.5)" : undefined,
                         }}
                       />
@@ -232,7 +213,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Alerts */}
         <div className="hex-border rounded-xl bg-card p-4 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-semibold tracking-widest uppercase text-muted-foreground font-mono">System Alerts</h3>
@@ -251,12 +231,8 @@ export default function Dashboard() {
               : alerts.map((alert, i) => (
                   <div key={i} className="flex gap-3 p-3 rounded-lg border"
                     style={{
-                      background: alert.type === "warn" ? "hsl(35 90% 55% / 0.08)"
-                        : alert.type === "success" ? "hsl(160 80% 45% / 0.08)"
-                        : "hsl(195 100% 50% / 0.06)",
-                      borderColor: alert.type === "warn" ? "hsl(35 90% 55% / 0.3)"
-                        : alert.type === "success" ? "hsl(160 80% 45% / 0.3)"
-                        : "hsl(195 100% 50% / 0.25)",
+                      background: alert.type === "warn" ? "hsl(35 90% 55% / 0.08)" : alert.type === "success" ? "hsl(160 80% 45% / 0.08)" : "hsl(195 100% 50% / 0.06)",
+                      borderColor: alert.type === "warn" ? "hsl(35 90% 55% / 0.3)" : alert.type === "success" ? "hsl(160 80% 45% / 0.3)" : "hsl(195 100% 50% / 0.25)",
                     }}>
                     {alert.type === "warn"
                       ? <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "hsl(35 90% 65%)" }} />
@@ -272,8 +248,6 @@ export default function Dashboard() {
                 ))
             }
           </div>
-
-          {/* Quick stats */}
           <div className="grid grid-cols-3 gap-2 pt-2 border-t border-border">
             {isLoading
               ? Array.from({ length: 3 }).map((_, i) => (
@@ -283,9 +257,9 @@ export default function Dashboard() {
                   </div>
                 ))
               : [
-                  { label: "Uptime",  value: `${data!.uptime}%`,   color: "text-green-400" },
-                  { label: "Latency", value: `${data!.latency}ms`, color: "text-primary"   },
-                  { label: "Errors",  value: "0.02%",               color: "text-yellow-400" },
+                  { label: "Uptime",  value: `${data?.uptime ?? 0}%`,   color: "text-green-400" },
+                  { label: "Latency", value: `${data?.latency ?? 0}ms`, color: "text-primary" },
+                  { label: "Errors",  value: "0.02%",                    color: "text-yellow-400" },
                 ].map(s => (
                   <div key={s.label} className="text-center">
                     <p className={`text-sm font-bold font-mono ${s.color}`}>{s.value}</p>
@@ -297,7 +271,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ── Service Registry ── */}
       <div className="hex-border rounded-xl bg-card p-4 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-semibold tracking-widest uppercase text-muted-foreground font-mono">Service Registry</h3>
@@ -331,12 +304,12 @@ export default function Dashboard() {
                   </div>
                   <div className="h-1 bg-muted rounded-full overflow-hidden">
                     <div className="h-full rounded-full transition-all duration-700" style={{
-                      width: `${svc.load}%`,
-                      background: svc.load > 80 ? "hsl(0 84% 60%)" : svc.load > 60 ? "hsl(35 90% 55%)" : "hsl(195 100% 50%)",
+                      width: `${svc.load ?? 0}%`,
+                      background: (svc.load ?? 0) > 80 ? "hsl(0 84% 60%)" : (svc.load ?? 0) > 60 ? "hsl(35 90% 55%)" : "hsl(195 100% 50%)",
                     }} />
                   </div>
                   <div className="flex items-center justify-between text-[10px] font-mono">
-                    <span className="text-muted-foreground">{svc.load}%</span>
+                    <span className="text-muted-foreground">{svc.load ?? 0}%</span>
                     <span className="text-muted-foreground">{svc.ping}</span>
                   </div>
                 </div>
@@ -344,7 +317,6 @@ export default function Dashboard() {
           }
         </div>
       </div>
-
     </div>
   );
 }
